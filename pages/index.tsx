@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Header from '../components/Header'
 import ImagesSection from '../components/ImagesSection'
 import SearchSection from '../components/SearchSection'
+import Footer from '../components/Footer'
 
 const Home: NextPage = () => {
   const [showHeader, setShowHeader] = useState(typeof window !== "undefined" && window.screenY > 500)
@@ -37,6 +38,7 @@ useEffect(() => {
         <SearchSection />
          <ImagesSection />
       </main>
+      <Footer />
     </>
   )
 }

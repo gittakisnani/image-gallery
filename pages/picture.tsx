@@ -1,5 +1,6 @@
 import { NextPage } from 'next'
 import { useEffect, useState} from 'react'
+import Footer from '../components/Footer'
 import Header from '../components/Header'
 import PicturePage from '../components/PicturePage'
 
@@ -31,6 +32,7 @@ const Picture: NextPage = () => {
         <>
           {showHeader && <Header bg='bg-white' searchBar className=' fixed top-0 left-0 right-0 z-50'  />}
             <PicturePage />
+            <Footer />
         </>
       )
 }

@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import React from 'react'
 import Container from '../components/Container'
+import Footer from '../components/Footer'
 import Header from '../components/Header'
 import BG from '../public/assets/BG.webp'
 const EditProfile = () => {
@@ -107,6 +108,7 @@ const EditProfile = () => {
                 </form>
         </Container>
       </main>
+      <Footer />
     </>
   )
 }

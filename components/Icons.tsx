@@ -1,5 +1,5 @@
-export { AiOutlineDown, AiOutlineUp, AiOutlineMenu, AiOutlineClose, AiFillHeart, AiOutlineHeart, AiOutlineCheck, AiFillCheckCircle, AiFillFacebook } from 'react-icons/ai'
-export { BsThreeDots, BsBookmarks, BsBookmarksFill, BsDownload, BsSearch, BsFillInfoCircleFill, BsTwitter, BsLinkedin  } from 'react-icons/bs'
+export { AiOutlineDown, AiOutlineUp, AiOutlineMenu, AiOutlineClose, AiFillHeart, AiOutlineHeart, AiOutlineCheck, AiFillCheckCircle, AiFillFacebook, AiFillApple, AiFillAndroid } from 'react-icons/ai'
+export { BsThreeDots, BsBookmarks, BsBookmarksFill, BsDownload, BsSearch, BsFillInfoCircleFill, BsTwitter, BsLinkedin, BsGithub  } from 'react-icons/bs'
 export { MdOutlineLanguage, MdOutlineContentCopy, MdError, MdModeEdit } from 'react-icons/md'
 export { FaMapMarkerAlt, FaPinterestP } from 'react-icons/fa'
 export { GrShare } from 'react-icons/gr'

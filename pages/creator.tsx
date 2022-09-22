@@ -1,6 +1,7 @@
 import { NextPage } from 'next'
 import { useEffect, useState} from 'react'
 import CreatorPage from '../components/CreatorPage'
+import Footer from '../components/Footer'
 import Header from '../components/Header'
 const Creator: NextPage = () => {
     const [showHeader, setShowHeader] = useState(typeof window !== "undefined" && window.screenY > 500)
@@ -33,6 +34,7 @@ const Creator: NextPage = () => {
              <CreatorPage />
             {/*<PicturePage /> */}
           </main>
+          <Footer />
         </>
       )
 }

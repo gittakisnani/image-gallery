@@ -42,11 +42,11 @@ const NavBar = ({ setNavBar } : { setNavBar: (value: boolean) => void}) => {
           Join
         </a>
         </Link>
-        <Link href="/creator">
+        {/* <Link href="/creator">
         <a className="bg-green-500 p-2 text-white font-semibold rounded-md border border-transparent hover:border-green-500 transitions">
           Username
         </a>
-        </Link>
+        </Link> */}
         <Link href='/upload'>
         <a className="bg-green-500 p-2 text-white font-semibold rounded-md border border-transparent hover:border-green-500 transitions">
           Upload
