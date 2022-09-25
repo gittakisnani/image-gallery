@@ -33,6 +33,10 @@ useEffect(() => {
 
   return (
     <>
+    <Head>
+      <title>Homepage</title>
+      <meta name="description" content="Home page of TakiSnani Image gallery to see hundreds of pictures for free." />
+    </Head>
       {showHeader && <Header bg='bg-white' searchBar className=' fixed top-0 left-0 right-0 z-50'  />}
       <main className=''>
         <SearchSection />

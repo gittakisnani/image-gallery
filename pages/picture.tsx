@@ -1,4 +1,5 @@
 import { NextPage } from 'next'
+import Head from 'next/head'
 import { useEffect, useState} from 'react'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
@@ -30,6 +31,10 @@ const Picture: NextPage = () => {
     
       return (
         <>
+        <Head>
+          <title>Picture Page</title>
+          <meta name="description" content="Picture page where you can like, collect or download your fav pics, Also you can see related pics, related topics" />
+        </Head>
           {showHeader && <Header bg='bg-white' searchBar className=' fixed top-0 left-0 right-0 z-50'  />}
             <PicturePage />
             <Footer />

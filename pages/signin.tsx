@@ -11,6 +11,7 @@ const Login = () => {
     <>
     <Head>
         <title>TakiSnani | Sign In</title>
+        <meta name="description" content="Sign in page" />
     </Head>
     <main className='min-h-screen relative '>
         <div className='absolute inset-0 -z-10 opacity-60'>

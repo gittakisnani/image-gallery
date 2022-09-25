@@ -1,4 +1,5 @@
 import { NextPage } from 'next'
+import Head from 'next/head'
 import { useEffect, useState} from 'react'
 import CreatorPage from '../components/CreatorPage'
 import Footer from '../components/Footer'
@@ -29,6 +30,10 @@ const Creator: NextPage = () => {
     
       return (
         <>
+        <Head>
+          <title>Creator Page</title>
+          <meta name="description" content="Creators page allow you to see all his pictures, follow him...." />
+        </Head>
           <main className=''>
           {showHeader && <Header bg='bg-white' searchBar className=' fixed top-0 left-0 right-0 z-50'  />}
              <CreatorPage />

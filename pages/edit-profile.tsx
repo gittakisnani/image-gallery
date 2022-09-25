@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import Image from 'next/image'
 import React from 'react'
 import Container from '../components/Container'
@@ -7,6 +8,10 @@ import BG from '../public/assets/BG.webp'
 const EditProfile = () => {
   return (
     <>
+    <Head>
+        <title>Edit My Profile</title>
+        <meta name="description" content="With this page creators, users can edit their profile pages" />
+    </Head>
       <Header bg='bg-white' searchBar  />
       <main className=''>
         <Container className='!max-w-[800px] py-10'>

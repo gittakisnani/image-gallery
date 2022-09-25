@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { useState, useRef } from 'react'
 import Container from '../components/Container'
 import Header from '../components/Header'
@@ -32,9 +33,13 @@ const Upload = () => {
 
   return (
     <>
+    <Head>
+        <title>Upload</title>
+        <meta name="description" content="Upload picture page with some instructions" />
+    </Head>
     <Header bg='bg-white' searchBar/> 
     <main className='bg-white'>
-        <Container className='!max-w-[1000px] p-4'>
+        <Container className='!max-w-[1100px] p-4'>
             <form className='rounded-xl p-6 md:p-8 border-dashed border-[3px] border-green-300'>
                 <div className='flex items-center flex-col gap-6 flex-1'>
                     <h3 className='text-2xl md:text-4xl text-center font-semibold text-slate-700'>
@@ -75,7 +80,7 @@ const Upload = () => {
             </form>
             <div className='grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 w-fit md:mx-auto'>
             {instructions.map((ins, index) => (
-                <p className='flex gap-1 items-center text-gray-500 font-semibold text-sm' key={index}>
+                <p className='flex gap-1 text-gray-500 font-semibold text-sm' key={index}>
                     <span className='text-lg text-green-600'><AiFillCheckCircle /></span>
                     {ins}
                 </p>

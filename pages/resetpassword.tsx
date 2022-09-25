@@ -13,6 +13,7 @@ const ResetPassword: NextPage = () => {
     <>
     <Head>
         <title>TakiSnani | Reset Password</title>
+        <meta name="description" content="Reset password page" />
     </Head>
     <main className='h-screen relative'>
         <div className='absolute inset-0 -z-10 opacity-60'>
