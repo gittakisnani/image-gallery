@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import Container from './Container'
 import { AiOutlineUp, AiOutlineDown, AiOutlineCheck} from './Icons'
+import { ModalProps } from './Modal'
 import Picture from './Picture'
-const ImagesSection = () => {
+
+
+const ImagesSection = ({ setIsOpen, isOpen, setText }: ModalProps & { setText: (value: string) => void }) => {
     const [sort, setSort] = useState('Trending')
     const [showSorts, setShowSorts] = useState(false);
 
@@ -32,14 +35,18 @@ const ImagesSection = () => {
                 </div>
             </div>
             <div className='my-10 max-w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2'>
-                <Picture />
-                <Picture />
-                <Picture />
-                <Picture />
-                <Picture />
-                <Picture />
-                <Picture />
-                <Picture />
+                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
+                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
+                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
+                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
+                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
+                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
+                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
+                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
+                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
+                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
+                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
+                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
             </div>
         </Container>
     </section>

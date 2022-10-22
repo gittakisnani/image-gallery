@@ -17,7 +17,7 @@ export default function Share({ share, setShare}: ShareProps) {
       <Dialog
         open={share}
         onClose={() => setShare(false)}
-        className="relative z-50"
+        className="relative z-[1000000]"
       >
         {/* The backdrop, rendered as a fixed sibling to the panel container */}
         <div className="fixed inset-0 bg-black/70" aria-hidden="true" />

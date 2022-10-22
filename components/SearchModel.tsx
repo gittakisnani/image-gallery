@@ -2,9 +2,10 @@ import React from 'react'
 import RecentSearch from './RecentSearch'
 import trendTopics from '../config/trends'
 import TrendTopic from './TrendTopic'
+import { motion } from 'framer-motion'
 const SearchModel = () => {
   return (
-    <div className='absolute top-[100%] my-4 bg-white left-0 right-0 rounded-md shadow-2xl z-30 p-4 md:p-6 max-h-[400px] overflow-y-auto'>
+    <motion.div initial={{height: 0}} animate={{ height: 400}} transition={{ duration: .3}} className='absolute top-[100%] my-4 bg-white left-0 right-0 rounded-md shadow-2xl z-30 p-4 md:p-6 max-h-[400px] overflow-y-auto'>
         <div className='flex items-center justify-between'>
             <h4 className='font-semibold text-xl md:text-2xl'>
                 Recent Searches
@@ -24,7 +25,7 @@ const SearchModel = () => {
                 ))}
             </div>
         </h4>
-    </div>
+    </motion.div>
   )
 }
 

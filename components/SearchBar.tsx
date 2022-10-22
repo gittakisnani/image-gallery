@@ -22,7 +22,7 @@ const SearchBar = ({ bg = 'bg-gray-200 ' }: { bg?: string}) => {
     }
 
     const handleBlur = () => {
-        setSearchModel(false)
+        setTimeout(() => setSearchModel(false), 100)
     }
     return (
         <form

@@ -4,8 +4,6 @@ import { useState } from 'react'
 import useWindowSize from '../hooks/useWindowSize'
 import Container from './Container'
 import { FiUserPlus, MdOutlineLanguage, AiOutlineUp, AiOutlineDown, AiOutlineCheck, MdModeEdit, BiImages} from './Icons'
-
-import Picture from './Picture'
 const CreatorPage = () => {
     const { width } = useWindowSize()
     const [sort, setSort] = useState<'Recency' | 'Popularity'>('Popularity');
@@ -76,14 +74,6 @@ const CreatorPage = () => {
             </div>
             </div>
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-10'>
-                <Picture />
-                <Picture />
-                <Picture />
-                <Picture />
-                <Picture />
-                <Picture />
-                <Picture />
-                <Picture />
             </div>
         </Container>
     </section>

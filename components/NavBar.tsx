@@ -33,7 +33,7 @@ const NavBar = ({ setNavBar } : { setNavBar: (value: boolean) => void}) => {
       </div>
       <div className="flex flex-col gap-2 md:flex-row">
         <Link href="/signin">
-        <a className="bg-transparent p-2 rounded-md border border-transparent hover:border-gray-200 transitions">
+        <a className="bg-transparent p-2 rounded-md border border-transparent md:hover:border-gray-200 transitions">
           Login
         </a>
         </Link>
