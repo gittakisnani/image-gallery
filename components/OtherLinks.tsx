@@ -13,14 +13,14 @@ const OtherLinks = () => {
         modules={[Navigation]}
         navigation
         spaceBetween={50}
-        slidesPerView={width! > 768 ? 10 : 4}
+        slidesPerView={Math.floor(width! / 150)}
         className='!px-10 !h-full'
         >
-            {Array(20).fill('Beach').map(( more, index ) => (
+            {Array(20).fill('beach').map(( more, index ) => (
                 <SwiperSlide className='flex items-center' key={index}>
-                    {/* <Link key={index} href={`/search/${more}`}> */}
-                            <a className='more'>{more}</a>
-                    {/* </Link> */}
+                    <Link key={index} href={`/search/${more}`}>
+                        <a className='more capitalize'>{more}</a>
+                    </Link>
                 </SwiperSlide>
             ))}
         </Swiper>
