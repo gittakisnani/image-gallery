@@ -1,6 +1,9 @@
 import { useRouter } from "next/router"
 import CreatorPage from "./CreatorPage";
 import { AiOutlineClose } from './Icons'
+
+
+
 const CreatorModel = () => {
   const router = useRouter();
 

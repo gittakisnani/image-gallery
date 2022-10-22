@@ -7,25 +7,25 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 
-const Picture = ({ setIsOpen, setText}: ModalProps & { setText: (value: string) => void}) => {
+const Picture = ({ setIsOpen, setText}: Partial< ModalProps & { setText: (value: string) => void}>) => {
   const [liked, setLiked] = useState(false)
   const [bookmarked, setBookmarked] = useState(false)
   const router = useRouter()
   const handleLike = () => {
     setLiked(!liked);
-    setIsOpen(true);
-    setText(`Picture ${!liked ? 'added to' : 'removed from'} your collection`)
+    setIsOpen!(true);
+    setText!(`Picture ${!liked ? 'added to' : 'removed from'} your collection`)
   }
 
   const handleDownload = () => {
-    setIsOpen(true);
-    setText('Picture successfully downloaded')
+    setIsOpen!(true);
+    setText!('Picture successfully downloaded')
   }
 
   const handleBookmark = () => {
     setBookmarked(!bookmarked)
-    setIsOpen(true);
-    setText(`Picture ${!bookmarked ? 'added to' : 'removed from'} your collection`)
+    setIsOpen!(true);
+    setText!(`Picture ${!bookmarked ? 'added to' : 'removed from'} your collection`)
   }
 
   return (
