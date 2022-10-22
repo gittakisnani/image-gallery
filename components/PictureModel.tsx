@@ -1,6 +1,9 @@
 import { useRouter } from "next/router"
 import PicturePage from "./PicturePage"
 import { AiOutlineClose } from './Icons'
+import { motion } from 'framer-motion'
+
+
 const PictureModel = () => {
   const router = useRouter();
 
@@ -12,9 +15,9 @@ const PictureModel = () => {
       className="absolute right-6 top-6 text-xl text-white">
         <AiOutlineClose />
       </button>
-        <div className="w-[90%] h-[90%] overflow-y-auto">
+        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-[90%] h-[90%] overflow-y-auto">
             <PicturePage />
-        </div>
+        </motion.div>
     </div>
   )
 }

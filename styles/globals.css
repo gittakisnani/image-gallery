@@ -60,3 +60,9 @@ body {
     @apply active:text-2xl transitions
   }
 }
+
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: black !important;
+}

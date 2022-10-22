@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 import CreatorPage from "./CreatorPage";
 import { AiOutlineClose } from './Icons'
-
+import { motion } from "framer-motion";
 
 
 const CreatorModel = () => {
@@ -15,9 +15,9 @@ const CreatorModel = () => {
       className="absolute right-6 top-6 text-xl text-white">
         <AiOutlineClose />
       </button>
-        <div className="w-[90%] h-[90%] overflow-y-auto">
+        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-[90%] h-[90%] overflow-y-auto">
             <CreatorPage />
-        </div>
+        </motion.div>
     </div>
   )
 }

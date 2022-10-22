@@ -42,21 +42,21 @@ const PicturePage = () => {
         </div>
         <div className='flex gap-2 justify-between items-center'>
           <div className='flex items-center gap-2'>
-            <div className='flex gap-1 items-center text-gray-500'>
+            <div className='flex gap-1 text-gray-500'>
               <span className='text-xl'><AiFillCheckCircle /></span>
               <p className='font-semibold'>Free to use</p>
             </div>
-            <div className='flex gap-1 items-center text-gray-500'>
+            <div className='flex gap-1 text-gray-500'>
               <span className='text-xl'><FaMapMarkerAlt /></span>
               <p className='font-semibold'>Zakinthos, Greece</p>
             </div>
           </div>
           <div className='flex items-center gap-2'>
-                <button className='action-button flex gap-2 items-center border border-gray-200 hover:border-gray-300 text-lg p-2 rounded-md font-semibold'>
+                <button className='action-button flex items-center gap-2 border border-gray-200 hover:border-gray-300 text-lg p-2 rounded-md font-semibold'>
                   <span><BsFillInfoCircleFill /></span>
                   <p className='hidden md:block'>More info</p>
                 </button>
-                <button onClick={() => setShare(true)} className='action-button flex gap-2 items-center border border-gray-200 hover:border-gray-300 text-lg p-2 rounded-md font-semibold'>
+                <button onClick={() => setShare(true)} className='action-button flex items-center gap-2 border border-gray-200 hover:border-gray-300 text-lg p-2 rounded-md font-semibold'>
                   <span><GrShare /></span>
                   <p className='hidden md:block'>Share</p>
                 </button>
