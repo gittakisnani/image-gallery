@@ -59,10 +59,8 @@ body {
   .act-button {
     @apply active:text-2xl transitions
   }
-}
 
-
-.swiper-button-prev,
-.swiper-button-next {
-  color: black !important;
+  .footer-link {
+    @apply text-xl tracking-tighter font-semibold transitions hover:text-gray-400 cursor-pointer
+  }
 }

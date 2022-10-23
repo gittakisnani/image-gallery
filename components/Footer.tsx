@@ -43,13 +43,13 @@ const Footer = () => {
             <div className="flex flex-col gap-2">
                 <h5 className="text-xl tracking-tighter font-semibold mb-4">TakiSnani</h5>
                 {['Free Stock Photos','Free Videos','Popular searches','Collections','Challenges','Leaderboard','Other plugins & apps'].map((el, index) => (
-                    <p className="text-xl tracking-tighter font-semibold transitions hover:text-gray-400" key={index}>{el}</p>
+                    <p className="footer-link" key={index}>{el}</p>
                 ))}
             </div>
             <div className="flex flex-col gap-2">
                 <h5 className="text-xl tracking-tighter font-semibold mb-4">Company</h5>
                 {['About','Blog','FAQ','Become a hero','Partner with','TakiSnani','Images','API'].map((el, index) => (
-                    <p className="text-xl tracking-tighter font-semibold transitions hover:text-gray-400" key={index}>{el}</p>
+                    <p className="footer-link" key={index}>{el}</p>
                 ))}
             </div>
             <div className="flex flex-col gap-2">

@@ -30,8 +30,8 @@ const Picture = ({ setIsOpen, setText}: Partial< ModalProps & { setText: (value:
 
   return (
     <>
-      <div className='relative'>
-        <div className='absolute top-0 right-0 left-0 z-10 flex justify-end items-center gap-2 p-2'>
+      <div className='relative group'>
+        <div className='absolute top-0 right-0 left-0 z-10 flex transitions justify-end items-center gap-2 p-2 opacity-0 group-hover:opacity-100'>
           <motion.button onClick={handleBookmark} initial={{scale: 0}} animate={{scale: 1}} className='act-button h-10 w-10 flex justify-center items-center bg-gray-50 action-button text-xl rounded-md'>
             {bookmarked ? <BsBookmarksFill /> : <BsBookmarks />}
           </motion.button>
@@ -42,7 +42,7 @@ const Picture = ({ setIsOpen, setText}: Partial< ModalProps & { setText: (value:
         <div className='absolute z-10 bottom-0 left-0 right-0 flex justify-between items-center p-2 py-4'>
           {/* Creator */}
           <div className='flex gap-2 items-center'>
-            <Link href='/?creator=1' as='creator'>
+            <Link href={`${router.pathname}/?creator=2`} as='creator'>
               <a className='h-10 w-10 rounded-full overflow-hidden'>
                 <Image src="https://images.pexels.com/users/avatars/139433618/dominika-mazur-209.jpeg?auto=compress&fit=crop&h=40&w=40&dpr=1" alt='Image' width="40px" height="40px" />
               </a>
@@ -50,7 +50,7 @@ const Picture = ({ setIsOpen, setText}: Partial< ModalProps & { setText: (value:
             <h5 className='name text-lg font-semibold text-white'>John Doe</h5>
           </div>
           {/* Download */}
-          <button onClick={handleDownload} className='act-button h-10 w-10 flex justify-center items-center bg-gray-50 action-button text-xl rounded-md'>
+          <button onClick={handleDownload} className='act-button h-10 w-10 flex justify-center items-center bg-gray-50 action-button text-xl rounded-md opacity-0 group-hover:opacity-100 transitions'>
             <BsDownload />
           </button>
         </div>
