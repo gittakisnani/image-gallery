@@ -1,51 +1,81 @@
 import Link from 'next/link'
-import React from 'react'
+import { SyntheticEvent, useRef, useState } from 'react'
 import Container from '../components/Container'
 import Logo from '../components/Logo'
 import { AiFillFacebook, MdError } from '../components/Icons'
 import Head from 'next/head'
-import { GetServerSideProps, NextPage } from 'next'
+import { NextPage } from 'next'
 import BG from '../public/assets/BG.webp'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 import useSWR from 'swr'
-import { useSWRHandler } from 'swr/dist/use-swr'
 import fetcher from '../utils/fetcher'
-import getGoogleOAuthURL from '../utils/getGoogleUrl'
+import axios from '../utils/axios'
+import { useRouter } from 'next/router'
+import Loading from '../components/Loading'
 
-interface User {
-    _id: string;
-    email: string;
-    name: string;
-    createdAt: Date;
-    updatedAt: Date;
-    __v: number;
-    session: string;
-    iat: number;
-    exp: number;
-}
-const Register: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
-    const { data } = useSWR<User | null>(
-        `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/me`,
-        fetcher,
-        { fallbackData }
-      );
 
-      if (data) {
-        return <div>Welcome! {data.name}</div>;
-      }
+const Register: NextPage = () => {
+    const router = useRouter();
 
-      // return (
-      //   <div>
-      //     <a href={getGoogleOAuthURL()}>Login with Google</a>
-      //     Please login
-      //   </div>
-      // );
+
+    const fNameRef = useRef<HTMLInputElement>(null);
+    const lNameRef = useRef<HTMLInputElement>(null)
+    const emailRef = useRef<HTMLInputElement>(null);
+    const pwdRef = useRef<HTMLInputElement>(null);
+    const [errMsg, setErrMsg] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleRegister = async (e: SyntheticEvent) => {
+        e.preventDefault()
+        if(![fNameRef, lNameRef, emailRef, pwdRef].every(el => el.current!.value)) {
+            return setErrMsg('All fields are required')
+        }
+
+
+        if(pwdRef.current!.value.length < 8) {
+            return setErrMsg('Password too short')
+        }
+
+        try {
+            setLoading(true)
+            setErrMsg('')
+            const { data } = await axios.post('users/create', {
+                firstName: fNameRef.current!.value,
+                lastName: lNameRef.current!.value,
+                email: emailRef.current!.value,
+                password: pwdRef.current!.value
+            })
+
+            if(data?.issues?.length && data.issues[0].code === 'too_small') throw new Error('Password too short');
+
+            [fNameRef, lNameRef, emailRef, pwdRef].forEach(el => el.current!.value = '')
+            router.push('/')
+
+        } catch(err: any) {
+            if(err.response?.data.message) {
+                setErrMsg(err.response.data.message) 
+            } else if (err.message) {
+                setErrMsg(err.message)
+            } else {
+                setErrMsg('Server error. Please try later.')
+            }
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <>
         <Head>
             <title>TakiSnani | Register</title>
         </Head>
         <main className='h-screen relative w-screen'>
+            {loading && <div className='fixed bg-black/10 text-white inset-0 flex items-center justify-center'>
+                <div className='absolute max-w-[400px] w-[70%] bg-white text-black p-4 rounded-md font-semibold text-xl'>
+                    <Loading />
+                </div>
+            </div>}
             <div className='absolute inset-0 -z-10 opacity-60'>
                 <Image src={BG} alt='Register Background' layout='fill' />
             </div>
@@ -73,11 +103,13 @@ const Register: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
                         </button>
     
                         <p className='text-center text-xl my-4'>OR</p>
-                        <form action='/hahaha' className='flex flex-col gap-4'>
+                        <form onSubmit={handleRegister} className='flex flex-col gap-4'>
                             <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                             <label htmlFor="fName">
                                 <p className='offscreen'>First name</p>
                                 <input 
+                                autoComplete='off'
+                                ref={fNameRef}
                                 id='fName'
                                 type="text" 
                                 className='form_input'
@@ -85,8 +117,10 @@ const Register: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
                                 />
                             </label>
                             <label htmlFor="lName">
-                                <p className='offscreen'>First name</p>
+                                <p className='offscreen'>Last name</p>
                                 <input 
+                                autoComplete='off'
+                                ref={lNameRef}
                                 id='lName'
                                 type="text" 
                                 className='form_input'
@@ -97,6 +131,7 @@ const Register: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
                             <label htmlFor="email" className='w-full'>
                                 <p className='offscreen'>Email</p>
                                 <input
+                                ref={emailRef}
                                 id='email' 
                                 type="email" 
                                 className='form_input'
@@ -106,16 +141,17 @@ const Register: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
                             <label htmlFor="pwd" className='w-full'>
                                 <p className='offscreen'>Password</p>
                                 <input
+                                ref={pwdRef}
                                 id='pwd' 
                                 type="password" 
                                 className='form_input'
                                 placeholder='Password'
                                 />
                             </label>
-                            <p className='text-red-600 text-left flex gap-2 items-center font-semibold'>
+                            {errMsg && <motion.p initial={{opacity: 0}} animate={{ opacity: 1}} className='text-red-600 text-left flex gap-2 items-center font-semibold'>
                             <span className='text-xl'><MdError /></span>
-                            Not a valid email
-                            </p>
+                            {errMsg}
+                            </motion.p>}
                             <button className='p-2 bg-green-600/80 transitions hover:bg-green-600 text-white w-full font-semibold rounded-md'>Create account</button>
                             <p className='text-gray-500 text-sm'>
                             By joining, you agree to our Terms of Service and Privacy Policy
@@ -128,18 +164,5 @@ const Register: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
         </>
       )
     };
-    
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   const data = await fetcher(
-//     `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/me`,
-//     context.req.headers
-//   );
-
-//   return { props: { fallbackData: data } };
-// };
-    
-
-
-  
 
 export default Register
