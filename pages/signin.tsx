@@ -1,12 +1,57 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import React from 'react'
+import { useRef, useState, SyntheticEvent } from 'react'
 import Container from '../components/Container'
 import Logo from '../components/Logo'
 import { AiFillFacebook, MdError } from '../components/Icons'
 import BG from '../public/assets/BG.webp'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
+import axios from '../utils/axios'
+import Loading from '../components/Loading'
+
+
 const Login = () => {
+    const router = useRouter()
+
+    const emailRef = useRef<HTMLInputElement>(null);
+    const pwdRef = useRef<HTMLInputElement>(null);
+
+    const [loading, setLoading] = useState(false);
+    const [errMsg, setErrMsg] = useState('')
+
+    const handleSubmit = async (e: SyntheticEvent) => {
+        e.preventDefault();
+
+        if(![emailRef, pwdRef].every(el => el.current!.value)) {
+            return setErrMsg('Both fields are required.')
+        }
+
+        if(pwdRef.current!.value.length < 8) {
+            return setErrMsg('Password too short')
+        }
+
+        try{
+            setErrMsg('');
+            setLoading(true)
+
+            const { data } = await axios.post('sessions/create', {
+                email: emailRef.current!.value,
+                password: pwdRef.current!.value
+            })
+
+            if(data?.issues?.length && data.issues[0].code === 'too_small') throw new Error('Password too short');
+
+            [pwdRef, emailRef].forEach(el => el.current!.value = '');
+            router.push('/')
+        } catch(err: any) {
+            console.error(err)
+            setErrMsg(err?.response?.data?.message || err?.message || 'Login failed')
+        } finally {
+            setLoading(false)
+        }
+    }
+
   return (
     <>
     <Head>
@@ -14,6 +59,11 @@ const Login = () => {
         <meta name="description" content="Sign in page" />
     </Head>
     <main className='min-h-screen relative '>
+            {loading && <div className='fixed bg-black/10 text-white inset-0 flex items-center justify-center'>
+                <div className='absolute max-w-[400px] w-[70%] bg-white text-black p-4 rounded-md font-semibold text-xl'>
+                    <Loading />
+                </div>
+            </div>}
         <div className='absolute inset-0 -z-10 opacity-60'>
             <Image src={BG} alt='Register Background' layout='fill' />
         </div>
@@ -41,10 +91,11 @@ const Login = () => {
                     </button>
 
                     <p className='text-center text-xl my-4'>OR</p>
-                    <form action='/hahaha' className='flex flex-col gap-4'>
+                    <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
                         <label htmlFor="email" className='w-full'>
                             <p className='offscreen'>Email</p>
                             <input
+                            ref={emailRef}
                             id='email' 
                             type="email" 
                             className='form_input'
@@ -54,16 +105,17 @@ const Login = () => {
                         <label htmlFor="pwd" className='w-full'>
                             <p className='offscreen'>Password</p>
                             <input
+                            ref={pwdRef}
                             id='pwd' 
                             type="password" 
                             className='form_input'
                             placeholder='Password'
                             />
                         </label>
-                        <p className='text-red-600 text-left flex gap-2 items-center font-semibold'>
+                        {errMsg && <p className='text-red-600 text-left flex gap-2 items-center font-semibold'>
                         <span className='text-xl'><MdError /></span>
-                        Not a valid email
-                        </p>
+                        {errMsg}
+                        </p>}
                         <button className='p-2 bg-green-600/80 transitions hover:bg-green-600 text-white w-full font-semibold rounded-md'>Login</button>
                         <Link href='/resetpassword'>
                             <a className='text-gray-500 text-sm transitions hover:underline underline-offset-2 text-right'>
