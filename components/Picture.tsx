@@ -10,7 +10,9 @@ import Link from 'next/link'
 const Picture = ({ setIsOpen, setText}: Partial< ModalProps & { setText: (value: string) => void}>) => {
   const [liked, setLiked] = useState(false)
   const [bookmarked, setBookmarked] = useState(false)
-  const router = useRouter()
+  const router = useRouter();
+
+  
   const handleLike = () => {
     setLiked(!liked);
     setIsOpen!(true);
@@ -42,7 +44,7 @@ const Picture = ({ setIsOpen, setText}: Partial< ModalProps & { setText: (value:
         <div className='absolute z-10 bottom-0 left-0 right-0 flex justify-between items-center p-2 py-4'>
           {/* Creator */}
           <div className='flex gap-2 items-center'>
-            <Link href={`${router.pathname}/?creator=2`} as='creator'>
+            <Link href={`${router.pathname}?creator=2`} as='creator'>
               <a className='h-10 w-10 rounded-full overflow-hidden'>
                 <Image src="https://images.pexels.com/users/avatars/139433618/dominika-mazur-209.jpeg?auto=compress&fit=crop&h=40&w=40&dpr=1" alt='Image' width="40px" height="40px" />
               </a>
@@ -54,7 +56,7 @@ const Picture = ({ setIsOpen, setText}: Partial< ModalProps & { setText: (value:
             <BsDownload />
           </button>
         </div>
-      <Link href={`${router.pathname}/?picture=2`} as='/picture'>
+      <Link href={`${router.pathname}?picture=2`} as='/picture'>
         <a>
         <Image src='https://images.pexels.com/photos/11719113/pexels-photo-11719113.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load' alt='Image' height="600px" width="500px" />
         </a>

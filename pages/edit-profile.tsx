@@ -5,11 +5,13 @@ import Container from '../components/Container'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import { MdError } from '../components/Icons'
+import AVATAR from '../public/assets/AVATAR.jpg'
 import { GetServerSideProps, NextPage } from 'next'
 import useSwr, { mutate } from 'swr'
 import fetcher from '../utils/fetcher'
 import axios from '../utils/axios'
 import Loading from '../components/Loading'
+import { useRouter } from 'next/router'
 
 interface User {
     firstName: string
@@ -27,6 +29,7 @@ interface User {
 }
 
 const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
+    const router = useRouter()
     const { data } = useSwr<User | null>(
         'users/6356573bd9d4764b5406729f',
         fetcher,
@@ -47,7 +50,9 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        [lastName, firstName, email, bio, location, website, twitter, yt, instagram, tiktok].forEach(el => el.current!.value = data![el.current!.name as keyof User] as string || '');
+        if(!data) router.push('/signin');
+        
+        data && [lastName, firstName, email, bio, location, website, twitter, yt, instagram, tiktok].forEach(el => el.current!.value = data![el.current!.name as keyof User] as string || '')
     }, [data])
 
     const handleUpdate = async (e: SyntheticEvent) => {
@@ -93,8 +98,8 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
                 Profile settings
             </h2>
             <div className='flex items-center gap-10 p-4'>
-                <div className='h-[100px] md:h-[170px] w-[100px] md:w-[170px] rounded-full overflow-hidden'>
-                    <Image src={data!.picture} alt='Profile pic' height={'200px'} width="200px" />
+                <div className='h-[100px] md:h-[170px] w-[100px] md:w-[170px] rounded-full overflow-hidden border-2 border-green-600'>
+                    <Image src={data?.picture || AVATAR} alt='Profile pic' height={'200px'} width="200px" />
                 </div>
                 <input 
                 type="file" 
@@ -122,7 +127,7 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
                         name='lastName'
                         />
                     </label>
-                    <p className='md:col-span-2 text-gray-500 font-semibold'>We’d like people to use real names in a community, so people would know who’s who.</p>
+                    <p className='col-span-2 text-gray-500 font-semibold'>We’d like people to use real names in a community, so people would know who’s who.</p>
                     <label htmlFor="email" className='edit_label'>
                         Email
                         <input 
@@ -133,8 +138,8 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
                         name='email'
                         />
                     </label>
-                    <h3 className='md:col-span-2 text-2xl font-semibold'>Recognition</h3>
-                    <label htmlFor="bio" className='edit_label md:col-span-2'>
+                    <h3 className='col-span-2 text-2xl font-semibold'>Recognition</h3>
+                    <label htmlFor="bio" className='edit_label col-span-2'>
                         Bio
                         <textarea 
                         ref={bio}
@@ -143,7 +148,7 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
                         name='bio'
                         />
                     </label>
-                    <p className='md:col-span-2 text-gray-500 font-semibold'>Brief description for your profile.</p>
+                    <p className='col-span-2 text-gray-500 font-semibold'>Brief description for your profile.</p>
                     <label htmlFor="location" className='edit_label'>
                         Location
                         <input 
