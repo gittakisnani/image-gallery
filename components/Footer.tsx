@@ -62,6 +62,10 @@ const Footer = () => {
                 ))}
                 </div>
             </div>
+            <div className="col-span-1 md:col-span-2 lg:col-span-4 flex flex-wrap items-center justify-center gap-4">
+                <p className="text-lg">© 2022 | All rights reserved</p>
+                <a href="mailto:takisnbusiness@gmail.com">Takisnbusiness@gmail.com</a>
+            </div>
         </Container>
     </footer>
   )
