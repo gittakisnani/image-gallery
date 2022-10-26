@@ -1,9 +1,10 @@
 import Head from 'next/head'
-import { useState, useRef } from 'react'
+import { useState, useRef, SyntheticEvent } from 'react'
 import Container from '../components/Container'
 import Header from '../components/Header'
 import { AiFillCheckCircle } from '../components/Icons'
-
+import axios from '../utils/axios'
+import previewFile from '../utils/previewFile'
 const instructions = [
     'Original content you captured',
     'Mindful of the rights of others',
@@ -15,21 +16,28 @@ const instructions = [
 const Upload = () => {
     const [src, setSrc] = useState('')
     const fileRef = useRef<null | HTMLInputElement>(null!)
+    const formRef = useRef<HTMLFormElement>(null)
+    const handleUpload = async (e: SyntheticEvent) => {
+        e.preventDefault();
+        if(!src) {
+            return alert('No picture found')
+        }
 
-    const previewFile = () => {
-        const file = fileRef.current?.files![0]
-        const reader  = new FileReader();
-        
-        reader.onloadend = function () {
-            setSrc(String(reader.result))
+        try {
+            const { data: imageUrl } = await axios.post('file/upload', {
+                file: fileRef.current!.files![0]
+            }, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+
+            console.log(imageUrl)
+        } catch (error) {
+            console.log(error)
         }
-        
-        if (file) {
-            reader.readAsDataURL(file);
-        } else {
-            setSrc('')
-        }
-        }
+
+    }
 
   return (
     <>
@@ -40,7 +48,7 @@ const Upload = () => {
     <Header bg='bg-white' searchBar/> 
     <main className='bg-white'>
         <Container className='!max-w-[1100px] p-4'>
-            <form className='rounded-xl p-6 md:p-8 border-dashed border-[3px] border-green-300'>
+            <form ref={formRef} onSubmit={handleUpload} encType='multipart/form-data' className='rounded-xl p-6 md:p-8 border-dashed border-[3px] border-green-300'>
                 <div className='flex items-center flex-col gap-6 flex-1'>
                     <h3 className='text-2xl md:text-4xl text-center font-semibold text-slate-700'>
                         Drag and drop to upload
@@ -49,9 +57,10 @@ const Upload = () => {
                     <button className='bg-green-600 text-white font-semibold text-lg p-2 rounded-md absolute'>Upload photo</button>
                     <input 
                     accept='image/*'
-                    onChange={previewFile} 
+                    onChange={() => previewFile(fileRef, src, setSrc)} 
                     ref={fileRef} 
                     type="file" 
+                    name='file'
                     className='file:text-white file:font-semibold file:text-lg file:rounded-md file:bg-green-600 file:p-2 file:border-none mx-auto opacity-0 cursor-pointer' />
                     </div>
                     {src && <div className='w-full flex flex-col md:items-center md:flex-row gap-4'>

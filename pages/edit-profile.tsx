@@ -4,7 +4,7 @@ import { useRef, SyntheticEvent, useEffect, useState } from 'react'
 import Container from '../components/Container'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
-import { MdError } from '../components/Icons'
+import { AiFillCamera, MdError } from '../components/Icons'
 import AVATAR from '../public/assets/AVATAR.jpg'
 import { GetServerSideProps, NextPage } from 'next'
 import useSwr, { mutate } from 'swr'
@@ -12,6 +12,9 @@ import fetcher from '../utils/fetcher'
 import axios from '../utils/axios'
 import Loading from '../components/Loading'
 import { useRouter } from 'next/router'
+import previewFile from '../utils/previewFile'
+
+const DEFAULT = 'https://cdn.vectorstock.com/i/preview-1x/77/30/default-avatar-profile-icon-grey-photo-placeholder-vector-17317730.webp'
 
 interface User {
     firstName: string
@@ -29,13 +32,15 @@ interface User {
 }
 
 const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
+    const [src, setSrc] = useState('')
+
     const router = useRouter()
     const { data } = useSwr<User | null>(
-        'users/6356573bd9d4764b5406729f',
+        'users/6356d15f04410d7e176a03b3',
         fetcher,
         { fallbackData }
     )
-
+    
     const email = useRef<HTMLInputElement>(null)
     const firstName = useRef<HTMLInputElement>(null)
     const lastName = useRef<HTMLInputElement>(null)
@@ -45,9 +50,13 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
     const twitter = useRef<HTMLInputElement>(null)
     const yt = useRef<HTMLInputElement>(null)
     const instagram = useRef<HTMLInputElement>(null)
-    const tiktok = useRef<HTMLInputElement>(null)
+    const tiktok = useRef<HTMLInputElement>(null);
+
+
     const [errMsg, setErrMsg] = useState('');
     const [loading, setLoading] = useState(false)
+    const takePicRef = useRef<HTMLInputElement>(null)
+
 
     useEffect(() => {
         if(!data) router.push('/signin');
@@ -62,19 +71,69 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
         setErrMsg('')
         setLoading(true)
         try{
-            const { data } = await axios.put('users/6356573bd9d4764b5406729f', 
+            const { data } = await axios.put('users/6356d15f04410d7e176a03b3', 
             {
                 firstName: firstName.current!.value,
                 lastName: lastName.current!.value,
                 email: email.current!.value,
                 ...updates
-            }, {
-
             })
 
             if(data.issues) throw new Error('Email is required')
         } catch(err: any) {
             setErrMsg(err.response?.data?.message || err?.message || 'Update failed');
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleTakePic = () => takePicRef.current!.click();
+
+    const handleUpdatePicture = async (e: SyntheticEvent) => {
+        e.preventDefault();
+        if(!src) {
+            return setErrMsg('No picture is selected')
+        }
+
+
+        setErrMsg('');
+        setLoading(true)
+        try {
+            //Add picture to db
+            const { data: imageUrl } = await axios.post<string>('file/upload', {
+                file: takePicRef.current!.files![0]
+            }, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+
+            //Change user picture
+
+            const { data: user } = await axios.put('users/6356d15f04410d7e176a03b3', {
+                picture: imageUrl
+            })
+
+        } catch(err) {
+            setErrMsg('Error updating profile avatar')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleRemovePicture = async () => {
+        if(data?.picture === src) return alert('Nice try')
+
+        setSrc(prev => DEFAULT);
+        setErrMsg('');
+        setLoading(true)
+        try {
+            const { data: user } = await axios.put('users/6356d15f04410d7e176a03b3', {
+                picture: src
+            })
+
+        } catch(err) {
+            setErrMsg('Error removing profile avatar')
         } finally {
             setLoading(false)
         }
@@ -86,7 +145,7 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
         <title>Edit My Profile</title>
         <meta name="description" content="With this page creators, users can edit their profile pages" />
     </Head>
-      <Header bg='bg-white' searchBar  />
+      <Header bg='bg-white' searchBar />
       <main className=''>
       {loading && <div className='fixed bg-black/10 text-white inset-0 flex items-center justify-center'>
                 <div className='absolute max-w-[400px] w-[70%] bg-white text-black p-4 rounded-md font-semibold text-xl'>
@@ -97,15 +156,28 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
             <h2 className='text-2xl md:text-5xl text-slate-900 font-semibold text-center'>
                 Profile settings
             </h2>
-            <div className='flex items-center gap-10 p-4'>
-                <div className='h-[100px] md:h-[170px] w-[100px] md:w-[170px] rounded-full overflow-hidden border-2 border-green-600'>
-                    <Image src={data?.picture || AVATAR} alt='Profile pic' height={'200px'} width="200px" />
+            <form onSubmit={handleUpdatePicture} className='flex items-center gap-10 p-4'>
+                <div className='h-[100px] md:h-[170px] w-[100px] md:w-[170px] rounded-full overflow-hidden border-2 border-green-600 group relative'>
+                    <Image id='picture' src={src || data?.picture || AVATAR} alt='Profile pic' height={'200px'} width="200px" />
+
+                    <div className='opacity-0 transitions group-hover:opacity-100 bg-black/30 absolute inset-0 flex items-center justify-center text-3xl'>
+                        <span className='hover:text-white transitions cursor-pointer'>
+                            <AiFillCamera onClick={handleTakePic} title='Change avatar' />
+                        </span>
+                    </div>
                 </div>
+                <div className='relative flex justify-start items-start'>
                 <input 
-                type="file" 
-                className='file:p-2 file:font-semibold file:bg-green-600 file:text-lg file:text-white file:border-none file:outline-none file:rounded-md file:cursor-pointer'
+                type="file"
+                onChange={() => previewFile(takePicRef, src, setSrc)}
+                ref={takePicRef} 
+                className='file:p-2 file:font-semibold file:bg-green-600 file:text-lg file:text-white file:border-none file:outline-none file:rounded-md file:cursor-pointer opacity-0 z-10'
                 />
-            </div>
+                <button className='font-semibold p-2 md:p-3 bg-green-600 text-lg text-white rounded-md absolute'>Choose file</button>
+                <button onClick={handleRemovePicture} type='button' className='font-semibold p-2 bg-gray-200 transitions hover:bg-gray-300 text-lg text-black rounded-md z-20 mr-2'>Remove</button>
+                {src && src !== DEFAULT && <button className='font-semibold p-2 bg-green-500 transitions hover:bg-green-600 text-lg text-white rounded-md z-20'>Update</button>}
+                </div>
+            </form>
                 <form onSubmit={handleUpdate} className='grid grid-cols-1 md:grid-cols-2 gap-4 p-4'>
                     <label htmlFor="fName" className='edit_label'>
                         First Name
@@ -225,7 +297,7 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const data = await fetcher(
-        'users/6356573bd9d4764b5406729f',
+        'users/6356d15f04410d7e176a03b3',
         context.req.headers
     );
 
