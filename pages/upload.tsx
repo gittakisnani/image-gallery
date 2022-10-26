@@ -2,9 +2,12 @@ import Head from 'next/head'
 import { useState, useRef, SyntheticEvent } from 'react'
 import Container from '../components/Container'
 import Header from '../components/Header'
-import { AiFillCheckCircle } from '../components/Icons'
+import { AiFillCheckCircle, MdError } from '../components/Icons'
+import Loading from '../components/Loading'
 import axios from '../utils/axios'
 import previewFile from '../utils/previewFile'
+
+
 const instructions = [
     'Original content you captured',
     'Mindful of the rights of others',
@@ -13,8 +16,14 @@ const instructions = [
     'To be downloaded and used for free',
     'Read Our Terms'
 ]
+
+
 const Upload = () => {
     const [src, setSrc] = useState('')
+    const [free, setFree] = useState(true);
+    const [errMsg, setErrMsg] = useState('');
+    const [loading, setLoading] = useState(false)
+    const locationRef = useRef<HTMLInputElement>(null)
     const fileRef = useRef<null | HTMLInputElement>(null!)
     const formRef = useRef<HTMLFormElement>(null)
     const handleUpload = async (e: SyntheticEvent) => {
@@ -23,8 +32,12 @@ const Upload = () => {
             return alert('No picture found')
         }
 
+        setErrMsg('');
+        setLoading(true)
+
         try {
-            const { data: imageUrl } = await axios.post('file/upload', {
+            //Add image to DB
+            const { data: image } = await axios.post('file/upload', {
                 file: fileRef.current!.files![0]
             }, {
                 headers: {
@@ -32,9 +45,20 @@ const Upload = () => {
                 }
             })
 
-            console.log(imageUrl)
+            
+            //Create new image document in DB
+            const { data: picture } = await axios.post('pictures/new', {
+                image,
+                user: '6356d15f04410d7e176a03b3',
+                free,
+                location: locationRef.current!.value || ''
+            })
+
+            console.log(picture)
         } catch (error) {
-            console.log(error)
+            setErrMsg('Error uploading picture')
+        } finally {
+            setLoading(false)
         }
 
     }
@@ -47,6 +71,11 @@ const Upload = () => {
     </Head>
     <Header bg='bg-white' searchBar/> 
     <main className='bg-white'>
+        {loading && <div className='fixed bg-black/10 text-white inset-0 flex items-center justify-center'>
+                <div className='absolute max-w-[400px] w-[70%] bg-white text-black p-4 rounded-md font-semibold text-xl'>
+                    <Loading />
+                </div>
+        </div>}
         <Container className='!max-w-[1100px] p-4'>
             <form ref={formRef} onSubmit={handleUpload} encType='multipart/form-data' className='rounded-xl p-6 md:p-8 border-dashed border-[3px] border-green-300'>
                 <div className='flex items-center flex-col gap-6 flex-1'>
@@ -69,21 +98,24 @@ const Upload = () => {
                     </div>
                     <div className='grid grid-cols-1 gap-2 flex-1'>
                         <label htmlFor="fileTitle" className='edit_label'>
-                            Title (required)
-                            <input id='fileTitle' type={'text'} className="edit_input" />
-                            <p className='flex gap-2 items-center text-gray-600 font-semibold text-sm'>
-                                The title should match your picture.
-                            </p>
+                            Location (Opt)
+                            <input ref={locationRef} id='fileTitle' type={'text'} className="edit_input" />
                         </label>
-                        <label htmlFor="desc" className='edit_label'>
-                            Description (optional)
-                            <textarea id='desc' className="edit_input resize-y min-h-[30px]" />
-                            <p className='flex gap-2 items-center text-gray-600 font-semibold text-sm'>
-                                The Description should match your picture.
-                            </p>
+                        <label htmlFor="desc" className='flex gap-2 items-center font-semibold text-lg text-gray-500'>
+                            <input 
+                            type="checkbox" 
+                            checked={free}
+                            onChange={() => setFree(!free)}
+                            className='accent-green-600 h-6 w-6 cursor-pointer'
+                            />
+                            Free
                         </label>
                     </div>
                     </div>}
+                    {errMsg && <p className='text-red-600 text-left flex gap-2 items-center font-semibold text-lg w-full'>
+                        <span className='text-xl'><MdError /></span>
+                        {errMsg}
+                    </p>}
                 <button className='p-2 rounded-md bg-green-600 text-white font-semibold text-lg my-4 self-end'>Post photo</button>
                 </div>
             </form>
