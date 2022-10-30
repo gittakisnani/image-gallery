@@ -64,3 +64,8 @@ body {
     @apply text-xl tracking-tighter font-semibold transitions hover:text-gray-400 cursor-pointer
   }
 }
+
+
+.loader {
+  background: linear-gradient(to right, #eeeeee 0%, #afafaf 8%, #d3d3d3 87%, #eeeeee 100%);
+}

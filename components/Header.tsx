@@ -6,14 +6,20 @@ import SearchBar from './SearchBar'
 import { AiOutlineMenu } from './Icons'
 import useWindowSize from '../hooks/useWindowSize'
 import { useEffect, useState } from 'react'
+import { User } from '../pages/edit-profile'
 
-const Header = ({ bg = "bg-transparent", searchBar = true, className }: HeaderProps) => {
+const Header = ({ bg = "bg-transparent", searchBar = true, className, user }: HeaderProps) => {
   const { width } = useWindowSize();
-  const [navBar, setNavBar] = useState(true)
+  const [navBar, setNavBar] = useState(true);
+  const [userData, setUserData] = useState<User>()
 
   useEffect(() => {
     if(width! < 768 ) setNavBar(false)
   }, [width])
+
+  useEffect(() => {
+    setUserData(user)
+  }, [user])
 
   return (
     <header className={`${bg} ${className}`}>
@@ -22,7 +28,7 @@ const Header = ({ bg = "bg-transparent", searchBar = true, className }: HeaderPr
           { searchBar && width! > 440 && <div className='flex-1 px-4'>
             <SearchBar />
           </div>}
-          { (width! >= 768 || width! < 768 && navBar) && <NavBar setNavBar={setNavBar} /> }
+          { (width! >= 768 || width! < 768 && navBar) && <NavBar user={userData!} setNavBar={setNavBar} /> }
           { width! < 768 && !navBar && <button className='text-2xl' onClick={() => setNavBar(true)}><AiOutlineMenu /></button>}
         </Container>
     </header>

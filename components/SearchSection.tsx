@@ -4,10 +4,11 @@ import Header from './Header'
 import SearchBar from './SearchBar'
 import { BsThreeDots } from './Icons'
 import Container from './Container'
-const SearchSection = () => {
+import { User } from '../pages/edit-profile'
+const SearchSection = ({ user }: { user: User }) => {
   return (
     <div className='h-[500px] p-4 relative flex flex-col'>
-        <Header searchBar={false}  />
+        <Header user={user} searchBar={false}  />
         <div className='absolute z-[-1] inset-0'>
             <img src='https://images.pexels.com/photos/9420591/pexels-photo-9420591.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load' className='w-full h-full bg-cover' />
         </div>

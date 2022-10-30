@@ -1,10 +1,13 @@
 import { StaticImageData } from "next/image"
 import { ReactNode } from "react"
+import { Creator } from "../components/CreatorPage"
+import { User } from "../pages/edit-profile"
 
 export type HeaderProps = {
     bg?: string
     searchBar?: boolean
     className?: string
+    user: User
 }
 
 export type ContainerProps = {
@@ -20,9 +23,19 @@ export interface WindowSize {
 export type ShareProps = {
     share: boolean
     setShare: (value: boolean) => void
+    link: string
+    username: string
 }
 
 export interface Trends {
     text: string
     image: string | StaticImageData
+}
+
+
+export interface ModalProps {
+    text?: string
+    setText: (value: string) => void
+    setIsOpen: (value: boolean) => void
+    isOpen: boolean
 }

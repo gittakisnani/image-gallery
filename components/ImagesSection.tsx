@@ -1,18 +1,48 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Container from './Container'
 import { AiOutlineUp, AiOutlineDown, AiOutlineCheck} from './Icons'
-import { ModalProps } from './Modal'
 import Picture from './Picture'
+import axios from '../utils/axios'
+import AnimatedPicture from './AnimatedPicture'
+import { ModalProps } from '../types/types'
+import { User } from '../pages/edit-profile'
 
 
-const ImagesSection = ({ setIsOpen, isOpen, setText }: ModalProps & { setText: (value: string) => void }) => {
+export interface PictureInterface {
+    _id: string
+    likes: string[]
+    views: string[]
+    downloads: number
+    free: boolean
+    location: string
+    size: number
+    image: string
+    user: string
+}
+const ImagesSection = ({ setIsOpen, isOpen, setText, me }: ModalProps & { me: User | null}) => {
     const [sort, setSort] = useState('Trending')
     const [showSorts, setShowSorts] = useState(false);
+    const [pictures, setPictures] = useState<PictureInterface[]>([])
 
     const handleSetSort = (sort: string) => {
         setShowSorts(false);
         setSort(sort)
     }
+
+    useEffect(() => {
+        async function getPictures() {
+            try {
+                const { data } = await axios.get<PictureInterface[] | null>('pictures');
+
+
+                setPictures(data!)
+            } catch(err) {
+                console.error(err)
+            }
+        }
+
+        getPictures()
+    }, [])
 
   return (
     <section id='explore' className='bg-white'>
@@ -35,18 +65,20 @@ const ImagesSection = ({ setIsOpen, isOpen, setText }: ModalProps & { setText: (
                 </div>
             </div>
             <div className='my-10 max-w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2'>
-                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
-                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
-                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
-                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
-                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
-                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
-                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
-                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
-                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
-                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
-                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
-                <Picture setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} />
+                {pictures.length > 0 ? pictures.map(pic => (
+                    <Picture me={me} user={pic.user} key={pic._id} image={pic.image} setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} _id={pic._id} />
+                ))
+
+                : <>
+                <AnimatedPicture />
+                <AnimatedPicture />
+                <AnimatedPicture />
+                <AnimatedPicture />
+                <AnimatedPicture />
+                <AnimatedPicture />
+                
+                </>}
+
             </div>
         </Container>
     </section>

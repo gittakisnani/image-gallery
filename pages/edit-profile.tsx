@@ -6,17 +6,18 @@ import Footer from '../components/Footer'
 import Header from '../components/Header'
 import { AiFillCamera, MdError } from '../components/Icons'
 import AVATAR from '../public/assets/AVATAR.jpg'
-import { GetServerSideProps, NextPage } from 'next'
+import { GetServerSideProps, GetStaticProps, NextPage } from 'next'
 import useSwr, { mutate } from 'swr'
 import fetcher from '../utils/fetcher'
 import axios from '../utils/axios'
 import Loading from '../components/Loading'
 import { useRouter } from 'next/router'
 import previewFile from '../utils/previewFile'
+import { Creator } from '../components/CreatorPage'
 
 const DEFAULT = 'https://cdn.vectorstock.com/i/preview-1x/77/30/default-avatar-profile-icon-grey-photo-placeholder-vector-17317730.webp'
 
-interface User {
+export interface User {
     firstName: string
     lastName: string
     email: string
@@ -29,14 +30,19 @@ interface User {
     yt?: string
     tiktok?: string
     bio?: string
+    following: string[]
+    followers: string[]
+    my_likes: string[]
+    my_bookmarks: string[]
+    _id: string
 }
 
-const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
-    const [src, setSrc] = useState('')
+const EditProfile: NextPage<{ me: User }> = ({ me: fallbackData }) => {
+    const [src, setSrc] = useState('');
 
     const router = useRouter()
     const { data } = useSwr<User | null>(
-        'users/6356d15f04410d7e176a03b3',
+        'me',
         fetcher,
         { fallbackData }
     )
@@ -59,8 +65,7 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
 
 
     useEffect(() => {
-        if(!data) router.push('/signin');
-        
+        if(!data?._id) router.push('/signin');
         data && [lastName, firstName, email, bio, location, website, twitter, yt, instagram, tiktok].forEach(el => el.current!.value = data![el.current!.name as keyof User] as string || '')
     }, [data])
 
@@ -71,7 +76,7 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
         setErrMsg('')
         setLoading(true)
         try{
-            const { data } = await axios.put('users/6356d15f04410d7e176a03b3', 
+            const { data: updateData } = await axios.put(`users/${data?._id}`, 
             {
                 firstName: firstName.current!.value,
                 lastName: lastName.current!.value,
@@ -79,7 +84,7 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
                 ...updates
             })
 
-            if(data.issues) throw new Error('Email is required')
+            if(updateData.issues) throw new Error('Email is required')
         } catch(err: any) {
             setErrMsg(err.response?.data?.message || err?.message || 'Update failed');
         } finally {
@@ -110,7 +115,7 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
 
             //Change user picture
 
-            const { data: user } = await axios.put('users/6356d15f04410d7e176a03b3', {
+            await axios.put(`users/${data?._id}`, {
                 picture: imageUrl
             })
 
@@ -128,7 +133,7 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
         setErrMsg('');
         setLoading(true)
         try {
-            const { data: user } = await axios.put('users/6356d15f04410d7e176a03b3', {
+            await axios.put(`users/${data?._id}`, {
                 picture: src
             })
 
@@ -145,7 +150,7 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
         <title>Edit My Profile</title>
         <meta name="description" content="With this page creators, users can edit their profile pages" />
     </Head>
-      <Header bg='bg-white' searchBar />
+      <Header user={data!} bg='bg-white' searchBar />
       <main className=''>
       {loading && <div className='fixed bg-black/10 text-white inset-0 flex items-center justify-center'>
                 <div className='absolute max-w-[400px] w-[70%] bg-white text-black p-4 rounded-md font-semibold text-xl'>
@@ -295,13 +300,15 @@ const EditProfile: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
 }
 
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const data = await fetcher(
-        'users/6356d15f04410d7e176a03b3',
-        context.req.headers
-    );
-
-    return { props: { fallbackData: data }}
-}
 
 export default EditProfile
+
+
+export const getStaticProps: GetStaticProps =  async (context) => {
+    const me = await fetcher<Creator>('me');
+    return {
+        props : {
+            me,
+        }
+    }
+}   

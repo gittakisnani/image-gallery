@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
   return (
     <>
-      {router.query.picture && <PictureModel />}
+      {router.query.picture && !router.query.user && <PictureModel />}
       {router.query.creator && <CreatorModel />}
       <Component {...pageProps} />
     </>

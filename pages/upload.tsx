@@ -1,11 +1,16 @@
+import { GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
-import { useState, useRef, SyntheticEvent } from 'react'
+import { useRouter } from 'next/router'
+import { useState, useRef, SyntheticEvent, useEffect } from 'react'
+import useSWR from 'swr'
 import Container from '../components/Container'
 import Header from '../components/Header'
 import { AiFillCheckCircle, MdError } from '../components/Icons'
 import Loading from '../components/Loading'
 import axios from '../utils/axios'
+import fetcher from '../utils/fetcher'
 import previewFile from '../utils/previewFile'
+import { User } from './edit-profile'
 
 
 const instructions = [
@@ -18,14 +23,30 @@ const instructions = [
 ]
 
 
-const Upload = () => {
+const Upload: NextPage<{ me: User }> = ({ me: fallbackData }) => {
+    const router = useRouter()
+
     const [src, setSrc] = useState('')
     const [free, setFree] = useState(true);
     const [errMsg, setErrMsg] = useState('');
     const [loading, setLoading] = useState(false)
+
     const locationRef = useRef<HTMLInputElement>(null)
     const fileRef = useRef<null | HTMLInputElement>(null!)
     const formRef = useRef<HTMLFormElement>(null)
+
+    const { data: currentUser } = useSWR<User | null>(
+        'me',
+        fetcher,
+        { fallbackData }
+    )
+
+
+    useEffect(() => {
+        if(!currentUser?._id) router.push('/signin')
+    }, [currentUser])
+
+
     const handleUpload = async (e: SyntheticEvent) => {
         e.preventDefault();
         if(!src) {
@@ -49,7 +70,7 @@ const Upload = () => {
             //Create new image document in DB
             const { data: picture } = await axios.post('pictures/new', {
                 image,
-                user: '6356d15f04410d7e176a03b3',
+                user: currentUser?._id,
                 free,
                 location: locationRef.current!.value || ''
             })
@@ -69,7 +90,7 @@ const Upload = () => {
         <title>Upload</title>
         <meta name="description" content="Upload picture page with some instructions" />
     </Head>
-    <Header bg='bg-white' searchBar/> 
+    <Header user={currentUser!} bg='bg-white' searchBar/> 
     <main className='bg-white'>
         {loading && <div className='fixed bg-black/10 text-white inset-0 flex items-center justify-center'>
                 <div className='absolute max-w-[400px] w-[70%] bg-white text-black p-4 rounded-md font-semibold text-xl'>
@@ -133,4 +154,13 @@ const Upload = () => {
   )
 }
 
-export default Upload
+export default Upload;
+
+export const getStaticProps: GetStaticProps = async () => {
+    const me = await fetcher<User>('me')
+    return {
+        props: {
+            me
+        }
+    }
+}

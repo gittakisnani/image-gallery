@@ -5,10 +5,11 @@ import { FaPinterestP, AiFillFacebook, BsLinkedin, BsTwitter, TiSocialTumbler, M
 import { ShareProps } from '../types/types'
 
 
-export default function Share({ share, setShare}: ShareProps) {
-    const [text, setText] = useState('Photo bt John Doe from TakiSnani')
+export default function Share({ share, setShare, link, username}: ShareProps) {
+    const [text, setText] = useState(`Photo by ${username} from TakiSnani`)
 
     const handleText = () => {
+        navigator.clipboard.writeText(link)
         if(text === 'Copied!') return;
         setText('Copied!')
         setTimeout(() => setText('Photo bt John Doe from TakiSnani'), 2000)
@@ -31,7 +32,7 @@ export default function Share({ share, setShare}: ShareProps) {
             </button>
             <Dialog.Title className='text-2xl md:text-4xl font-bold text-center'>Share this with your Community</Dialog.Title>
             <div className='flex items-center gap-2 justify-center my-4'>
-                <a href='https://www.pinterest.com/pin/create/a/'>
+                <a href={'https://www.pinterest.com/pin/create/' + link}>
                     <a className='bg-[#E60023]/20 text-[#E60023] transitions hover:bg-[#E60023]/30 text-xl rounded-full h-12 w-12 grid place-items-center'>
                         <FaPinterestP />
                     </a>
