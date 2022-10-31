@@ -2,12 +2,16 @@ import { useRouter } from "next/router"
 import CreatorPage from "./CreatorPage";
 import { AiOutlineClose } from './Icons'
 import { motion } from "framer-motion";
-
+import Modal from "./Modal";
+import { useState } from 'react'
 
 const CreatorModel = () => {
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+  const [text, setText] = useState('')
 
-  const handleRouter = () => router.push(router.pathname)
+  const handleRouter = () => router.push(router.pathname);
+
   return (
     <div className="fixed inset-0 overflow-y-auto z-[1000] md:z-[10000] flex justify-center items-center bg-black/20">
       <button
@@ -16,7 +20,8 @@ const CreatorModel = () => {
         <AiOutlineClose />
       </button>
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-[90%] h-[90%] overflow-y-auto">
-            <CreatorPage />
+            <CreatorPage isOpen={isOpen} setIsOpen={setIsOpen} setText={setText}  />
+            <Modal isOpen={isOpen} setIsOpen={setIsOpen} text={text} />
         </motion.div>
     </div>
   )

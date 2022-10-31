@@ -20,7 +20,7 @@ const UserMenu = ({ userId }: UserMenuProps) => {
         }
     }
   return (
-    <div className='bg-inherit w-full md:absolute md:top-[100%] md:mt-2 md:bg-white md:shadow p-4 md:rounded-md'>
+    <div className='bg-inherit w-full md:absolute md:top-[100%] md:mt-2 md:bg-white md:shadow-2xl p-4 md:rounded-md'>
         <ul className='flex gap-w flex-col text-left'>
             <Link href={`/creator/${userId}?photos`}>
                 <a target='_blank'>

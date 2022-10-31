@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import useWindowSize from '../hooks/useWindowSize'
 import Container from './Container'
-import { BsBookmarks, BsBookmarksFill, AiFillHeart, AiOutlineHeart, AiOutlineCheck, FaMapMarkerAlt, AiFillCheckCircle, BsFillInfoCircleFill, GrShare, FiUserPlus} from './Icons'
+import { BsBookmarks, BsBookmarksFill, AiFillHeart, AiOutlineHeart, AiOutlineCheck, FaMapMarkerAlt, AiFillCheckCircle, BsFillInfoCircleFill, GrShare, FiUserPlus, RiUserUnfollowLine} from './Icons'
 import More from './More'
 import Share from './Share'
 import { PictureInterface } from './ImagesSection'
@@ -93,6 +93,9 @@ const PicturePage = ({ picture, setIsOpen, setText, isOpen }: { picture?: Pictur
     }
   }
 
+
+  const checkFollow = me?.following.includes(user?._id!) && user?.followers.includes(me._id)
+
   return (
     <main className='bg-white'>
       <Share link={image?.image || ''} username={image?.user || ''} share={share} setShare={setShare} />
@@ -107,7 +110,7 @@ const PicturePage = ({ picture, setIsOpen, setText, isOpen }: { picture?: Pictur
             <div className='flex flex-col text-lg'>
               <h3 className='text-black font-bold'>{user?.firstName} {user?.lastName}</h3>
               {me?._id !== user?._id && <p onClick={handleFollow} className='text-gray-500 font-semibold cursor-pointer'>
-                {me?.following.includes(user?._id!) && user?.followers.includes(me._id!)
+                {checkFollow
                 ? 'Unfollow'
                 : 'Follow'
                 }
@@ -163,7 +166,7 @@ const PicturePage = ({ picture, setIsOpen, setText, isOpen }: { picture?: Pictur
               </a>
             </Link>
             <button className='action-button flex self-stretch gap-2 items-center border border-gray-200 hover:border-gray-300 text-xl p-2 rounded-md'>
-              <FiUserPlus />
+              {checkFollow ? <RiUserUnfollowLine /> : <FiUserPlus />}
             </button>
         </div>}
         {user?._id && image?._id && <More me={me} setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} user={user._id} filter={image._id} />}

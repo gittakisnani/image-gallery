@@ -2,7 +2,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
-import { mutate } from 'swr'
 import useWindowSize from '../hooks/useWindowSize'
 import { User } from '../pages/edit-profile'
 import { ModalProps } from '../types/types'
@@ -11,7 +10,7 @@ import fetcher from '../utils/fetcher'
 import AnimatedPicture from './AnimatedPicture'
 import Container from './Container'
 import FollowUser from './FollowUser'
-import { FiUserPlus, MdOutlineLanguage, AiOutlineUp, AiOutlineDown, AiOutlineCheck, MdModeEdit, BiImages } from './Icons'
+import { FiUserPlus, MdOutlineLanguage, AiOutlineUp, AiOutlineDown, AiOutlineCheck, MdModeEdit, BiImages, RiUserUnfollowLine } from './Icons'
 import { PictureInterface } from './ImagesSection'
 import Picture from './Picture'
 
@@ -125,7 +124,10 @@ const CreatorPage = ({creator: user, setIsOpen, setText, isOpen, loggedUser}: { 
                     </a>
                   </Link>
                 :   <button onClick={handleFollow} className='flex items-center gap-2'>
-                        {width! >= 768 ? <> <FiUserPlus size='25px' /> {checkFollow ? 'Unfollow' : 'follow'}</> : <FiUserPlus />}
+                        {checkFollow
+                        ?    <><RiUserUnfollowLine size='25px' /> {width! >= 768 && 'Unfollow'}</>
+                        :    <><FiUserPlus size='25px' /> {width! >= 768 && 'Follow'}</>
+                        }
                     </button>
                 }
             </div>
@@ -193,12 +195,12 @@ const CreatorPage = ({creator: user, setIsOpen, setText, isOpen, loggedUser}: { 
                     <AnimatedPicture />
                 </>}
             </div>}
-            {router.asPath.includes('following') && <ul className='list-none flex-col gap-2 flex'>
+            {router.asPath.includes('following') && <ul className='list-none flex-col gap-2 flex border border-green-500 mt-2 rounded-md'>
                 {me?.following.map(user => (
                 <FollowUser key={user} userId={user} />
             ))}
             </ul>}
-            {router.asPath.includes('followers') && <ul className='list-none flex-col gap-2 flex'>
+            {router.asPath.includes('followers') && <ul className='list-none flex-col gap-2 flex border border-green-500 mt-2 rounded-md'>
                 {me?.followers.map(user => (
                 <FollowUser key={user} userId={user} />
             ))}
