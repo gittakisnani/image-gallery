@@ -77,6 +77,7 @@ const Upload: NextPage<{ me: User }> = ({ me: fallbackData }) => {
 
             console.log(picture)
         } catch (error) {
+            console.log({ error })
             setErrMsg('Error uploading picture')
         } finally {
             setLoading(false)
