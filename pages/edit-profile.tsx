@@ -162,7 +162,8 @@ const EditProfile: NextPage<{ me: User }> = ({ me: fallbackData }) => {
                 Profile settings
             </h2>
             <form onSubmit={handleUpdatePicture} className='flex items-center gap-10 p-4'>
-                <div className='h-[100px] md:h-[170px] w-[100px] md:w-[170px] rounded-full overflow-hidden border-2 border-green-600 group relative'>
+                <div className='flex flex-col md:flex-row gap-2 md:items-center'>
+                <div className='h-[100px] md:h-[170px] w-[100px] md:w-[170px] rounded-full overflow-hidden border-2 border-green-600 group relative flex justify-center mx-auto '>
                     <Image id='picture' src={src || data?.picture || AVATAR} alt='Profile pic' height={'200px'} width="200px" />
 
                     <div className='opacity-0 transitions group-hover:opacity-100 bg-black/30 absolute inset-0 flex items-center justify-center text-3xl'>
@@ -171,7 +172,7 @@ const EditProfile: NextPage<{ me: User }> = ({ me: fallbackData }) => {
                         </span>
                     </div>
                 </div>
-                <div className='relative flex justify-start items-start'>
+                <div className='relative flex justify-start items-start flex-wrap'>
                 <input 
                 type="file"
                 onChange={() => previewFile(takePicRef, src, setSrc)}
@@ -181,6 +182,7 @@ const EditProfile: NextPage<{ me: User }> = ({ me: fallbackData }) => {
                 <button className='font-semibold p-2 md:p-3 bg-green-600 text-lg text-white rounded-md absolute'>Choose file</button>
                 <button onClick={handleRemovePicture} type='button' className='font-semibold p-2 bg-gray-200 transitions hover:bg-gray-300 text-lg text-black rounded-md z-20 mr-2'>Remove</button>
                 {src && src !== DEFAULT && <button className='font-semibold p-2 bg-green-500 transitions hover:bg-green-600 text-lg text-white rounded-md z-20'>Update</button>}
+                </div>
                 </div>
             </form>
                 <form onSubmit={handleUpdate} className='grid grid-cols-1 md:grid-cols-2 gap-4 p-4'>
