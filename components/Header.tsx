@@ -18,7 +18,7 @@ const Header = ({ bg = "bg-transparent", searchBar = true, className, user }: He
   }, [width])
 
   useEffect(() => {
-    setUserData(user)
+    setUserData(user!)
   }, [user])
 
   return (

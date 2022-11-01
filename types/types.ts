@@ -1,13 +1,12 @@
 import { StaticImageData } from "next/image"
 import { ReactNode } from "react"
-import { Creator } from "../components/CreatorPage"
 import { User } from "../pages/edit-profile"
 
 export type HeaderProps = {
     bg?: string
     searchBar?: boolean
     className?: string
-    user: User
+    user?: User
 }
 
 export type ContainerProps = {
