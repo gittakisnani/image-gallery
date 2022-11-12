@@ -26,6 +26,16 @@ export type ShareProps = {
     username: string
 }
 
+export type PictureInfosProps = {
+    url: string
+    createdAt: Date
+    views: number
+    likes: number
+    downloads: number
+    infos: boolean
+    setInfos: (value: boolean) => void
+}
+
 export interface Trends {
     text: string
     image: string | StaticImageData

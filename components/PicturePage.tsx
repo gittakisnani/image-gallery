@@ -12,8 +12,12 @@ import { Creator } from './CreatorPage'
 import Link from 'next/link'
 import { ModalProps } from '../types/types'
 import { User } from '../pages/edit-profile'
+import PictureInfos from './PictureInfos'
+
+
 const PicturePage = ({ picture, setIsOpen, setText, isOpen }: { picture?: PictureInterface } & ModalProps) => {
-  const [share, setShare] = useState(false)
+  const [share, setShare] = useState(false);
+  const [infos, setInfos] = useState(false)
   const [image, setImage] = useState<PictureInterface | null>(picture!);
   const [liked, setLiked] = useState(false);
   const [bookmarked, setBookmarked] = useState(false)
@@ -98,6 +102,7 @@ const PicturePage = ({ picture, setIsOpen, setText, isOpen }: { picture?: Pictur
 
   return (
     <main className='bg-white'>
+      <PictureInfos infos={infos} setInfos={setInfos} url={image?.image || ''} views={image?.user.length || 0} downloads={image?.downloads || 0} likes={image?.likes.length || 0} createdAt={image?.createdAt || new Date} />
       <Share link={image?.image || ''} username={image?.user || ''} share={share} setShare={setShare} />
       <Container className='p-4 md:p-6'>
         <div className='flex justify-between items-center '>
@@ -146,7 +151,7 @@ const PicturePage = ({ picture, setIsOpen, setText, isOpen }: { picture?: Pictur
             </div>}
           </div>
           <div className='flex items-center gap-2'>
-                <button className='action-button flex items-center gap-2 border border-gray-200 hover:border-gray-300 text-lg p-2 rounded-md font-semibold'>
+                <button onClick={() => setInfos(true)} className='action-button flex items-center gap-2 border border-gray-200 hover:border-gray-300 text-lg p-2 rounded-md font-semibold'>
                   <span><BsFillInfoCircleFill /></span>
                   <p className='hidden md:block'>More info</p>
                 </button>

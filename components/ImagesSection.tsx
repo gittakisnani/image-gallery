@@ -18,6 +18,7 @@ export interface PictureInterface {
     size: number
     image: string
     user: string
+    createdAt: Date
 }
 const ImagesSection = ({ setIsOpen, isOpen, setText, me }: ModalProps & { me: User | null}) => {
     const [sort, setSort] = useState('Trending')
