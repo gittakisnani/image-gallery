@@ -38,6 +38,7 @@ const CreatorPage = ({creator: user, setIsOpen, setText, isOpen, loggedUser}: { 
     const [sort, setSort] = useState<'Recency' | 'Popularity'>('Popularity');
     const [showSort, setShowSort] = useState(false)
     const [pictures, setPictures] = useState<PictureInterface[]>([]);
+    const [likedAndBookmarked, setLikedAndBookmarked] = useState<PictureInterface[]>([]);
     const [creator, setCreator] = useState<Creator | null>(user || null);
     const [me, setMe] = useState<User | null>(loggedUser || null)
     const handleShowSort = () => setShowSort(!showSort);
@@ -51,14 +52,18 @@ const CreatorPage = ({creator: user, setIsOpen, setText, isOpen, loggedUser}: { 
         async function findCreator() {
             try {
                 if(!user) {
-                    const { data } = await axios.get<Creator | null>(`users/${router.query.creator}`);
+                    const data = await fetcher<Creator>(`users/${router.query.creator}`);
                     setCreator(data!);
-                    const { data: picturesData } = await axios.get<PictureInterface[] | null>(`pictures/${data?._id}/pictures`);
+                    const picturesData = await fetcher<PictureInterface[]>(`pictures/${data?._id}/pictures`);
                     setPictures(picturesData!);
+                    const likesAndBookmarksData = await fetcher<PictureInterface[]>('user/likes-and-bookmarks');
+                    setLikedAndBookmarked(likesAndBookmarksData!) 
                     return 
                 }
-                const { data: picturesData } = await axios.get<PictureInterface[] | null>(`pictures/${creator?._id}/pictures`);
+                const picturesData = await fetcher<PictureInterface[]>(`pictures/${creator?._id}/pictures`);
                 setPictures(picturesData!)
+                const likesAndBookmarksData = await fetcher<PictureInterface[]>('user/likes-and-bookmarks');
+                setLikedAndBookmarked(likesAndBookmarksData!) 
             } catch(err) {
                 console.error(err)
             }
@@ -186,6 +191,17 @@ const CreatorPage = ({creator: user, setIsOpen, setText, isOpen, loggedUser}: { 
             </div>
             {router.asPath.includes('photos') && <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-10'>
                 {pictures?.length > 0 ? pictures?.map(pic => (
+                    <Picture me={me} setText={setText} setIsOpen={setIsOpen} isOpen={isOpen} key={pic._id} image={pic.image} user={creator?._id} _id={pic._id} />
+                )) : <>
+                    <AnimatedPicture />
+                    <AnimatedPicture />
+                    <AnimatedPicture />
+                    <AnimatedPicture />
+                    <AnimatedPicture />
+                </>}
+            </div>}
+            {router.asPath.includes('collections') && <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-10'>
+                {likedAndBookmarked?.length > 0 ? likedAndBookmarked?.map(pic => (
                     <Picture me={me} setText={setText} setIsOpen={setIsOpen} isOpen={isOpen} key={pic._id} image={pic.image} user={creator?._id} _id={pic._id} />
                 )) : <>
                     <AnimatedPicture />
