@@ -27,6 +27,8 @@ export interface Creator {
     followers: string[]
     picture: string
     _id: string
+    my_likes: string[]
+    my_bookmarks: string[]
 }
 
 
@@ -39,7 +41,7 @@ const CreatorPage = ({creator: user, setIsOpen, setText, isOpen, loggedUser}: { 
     const [showSort, setShowSort] = useState(false)
     const [pictures, setPictures] = useState<PictureInterface[]>([]);
     const [likedAndBookmarked, setLikedAndBookmarked] = useState<PictureInterface[]>([]);
-    const [creator, setCreator] = useState<Creator | null>(user || null);
+    const [creator, setCreator] = useState<Creator| null>(user || null);
     const [me, setMe] = useState<User | null>(loggedUser || null)
     const handleShowSort = () => setShowSort(!showSort);
 
@@ -200,16 +202,37 @@ const CreatorPage = ({creator: user, setIsOpen, setText, isOpen, loggedUser}: { 
                     <AnimatedPicture />
                 </>}
             </div>}
-            {router.asPath.includes('collections') && <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-10'>
-                {likedAndBookmarked?.length > 0 ? likedAndBookmarked?.map(pic => (
-                    <Picture me={me} setText={setText} setIsOpen={setIsOpen} isOpen={isOpen} key={pic._id} image={pic.image} user={creator?._id} _id={pic._id} />
-                )) : <>
-                    <AnimatedPicture />
-                    <AnimatedPicture />
-                    <AnimatedPicture />
-                    <AnimatedPicture />
-                    <AnimatedPicture />
-                </>}
+            {router.asPath.includes('collections') && <div className='flex flex-col gap-2 mt-10'>
+                <h3 className='text-xl font-semibold'>Liked pictures:</h3>
+                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+                    {likedAndBookmarked?.filter(pic => creator?.my_likes.includes(pic._id))?.length ? likedAndBookmarked?.filter(pic => creator?.my_likes.includes(pic._id)).map(pic => (
+                        <Picture me={me} setText={setText} setIsOpen={setIsOpen} isOpen={isOpen} key={pic._id} image={pic.image} user={creator?._id} _id={pic._id} />
+                    )) : likedAndBookmarked?.filter(pic => creator?.my_likes.includes(pic._id)).length === 0 ? 
+                    <p className='text-xl w-full sm:col-span-2 md:col-span-3 text-center'>No pictures to display 😞.</p> 
+                        : <>
+                        <AnimatedPicture />
+                        <AnimatedPicture />
+                        <AnimatedPicture />
+                        <AnimatedPicture />
+                        <AnimatedPicture />
+                        </>
+                    }
+                </div>
+                <h3 className='text-xl font-semibold'>Bookmarked pictures:</h3>
+                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+                    {likedAndBookmarked?.filter(pic => creator?.my_bookmarks.includes(pic._id))?.length ? likedAndBookmarked?.filter(pic => creator?.my_bookmarks.includes(pic._id)).map(pic => (
+                        <Picture me={me} setText={setText} setIsOpen={setIsOpen} isOpen={isOpen} key={pic._id} image={pic.image} user={creator?._id} _id={pic._id} />
+                    )) :  likedAndBookmarked?.filter(pic => creator?.my_bookmarks.includes(pic._id)).length === 0 ? 
+                    <p className='text-xl w-full sm:col-span-2 md:col-span-3 text-center'>No pictures to display 😞.</p> :
+                        <>
+                        <AnimatedPicture />
+                        <AnimatedPicture />
+                        <AnimatedPicture />
+                        <AnimatedPicture />
+                        <AnimatedPicture />
+                        </>
+                    }
+                </div>
             </div>}
             {router.asPath.includes('following') && <ul className='list-none flex-col gap-2 flex border border-green-500 mt-2 rounded-md'>
                 {me?.following.map(user => (
