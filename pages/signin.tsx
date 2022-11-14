@@ -8,7 +8,7 @@ import BG from '../public/assets/BG.webp'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import axios from '../utils/axios'
-import Loading from '../components/Loading'
+import Loading, { LoadingText } from '../components/Loading'
 
 
 const Login = () => {
@@ -18,7 +18,8 @@ const Login = () => {
     const pwdRef = useRef<HTMLInputElement>(null);
 
     const [loading, setLoading] = useState(false);
-    const [errMsg, setErrMsg] = useState('')
+    const [errMsg, setErrMsg] = useState('');
+    const [loadingText, setLoadingText] = useState<LoadingText>()
 
     const handleSubmit = async (e: SyntheticEvent) => {
         e.preventDefault();
@@ -33,7 +34,8 @@ const Login = () => {
 
         try{
             setErrMsg('');
-            setLoading(true)
+            setLoading(true);
+            setLoadingText('Signing in')
 
             const { data } = await axios.post('sessions/create', {
                 email: emailRef.current!.value,
@@ -48,7 +50,8 @@ const Login = () => {
             console.error(err)
             setErrMsg(err?.response?.data?.message || err?.message || 'Login failed')
         } finally {
-            setLoading(false)
+            setLoading(false);
+            setLoadingText('Loading')
         }
     }
 
@@ -61,7 +64,7 @@ const Login = () => {
     <main className='min-h-screen relative '>
             {loading && <div className='fixed bg-black/10 text-white inset-0 flex items-center justify-center'>
                 <div className='absolute max-w-[400px] w-[70%] bg-white text-black p-4 rounded-md font-semibold text-xl'>
-                    <Loading />
+                    <Loading text={loadingText} />
                 </div>
             </div>}
         <div className='absolute inset-0 -z-10 opacity-60'>

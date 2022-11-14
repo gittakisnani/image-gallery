@@ -12,19 +12,20 @@ import useSWR from 'swr'
 import fetcher from '../utils/fetcher'
 import axios from '../utils/axios'
 import { useRouter } from 'next/router'
-import Loading from '../components/Loading'
+import Loading, { LoadingText } from '../components/Loading'
 
 
 const Register: NextPage = () => {
     const router = useRouter();
 
-
     const fNameRef = useRef<HTMLInputElement>(null);
     const lNameRef = useRef<HTMLInputElement>(null)
     const emailRef = useRef<HTMLInputElement>(null);
     const pwdRef = useRef<HTMLInputElement>(null);
+
     const [errMsg, setErrMsg] = useState('');
     const [loading, setLoading] = useState(false);
+    const [loadingText, setLoadingText] = useState<LoadingText>()
 
     const handleRegister = async (e: SyntheticEvent) => {
         e.preventDefault()
@@ -38,7 +39,8 @@ const Register: NextPage = () => {
         }
 
         try {
-            setLoading(true)
+            setLoading(true);
+            setLoadingText('Registering')
             setErrMsg('')
             const { data } = await axios.post('users/create', {
                 firstName: fNameRef.current!.value,
@@ -61,7 +63,8 @@ const Register: NextPage = () => {
                 setErrMsg('Server error. Please try later.')
             }
         } finally {
-            setLoading(false)
+            setLoading(false);
+            setLoadingText('Loading')
         }
     }
 
@@ -73,7 +76,7 @@ const Register: NextPage = () => {
         <main className='h-screen relative w-screen'>
             {loading && <div className='fixed bg-black/10 text-white inset-0 flex items-center justify-center'>
                 <div className='absolute max-w-[400px] w-[70%] bg-white text-black p-4 rounded-md font-semibold text-xl'>
-                    <Loading />
+                    <Loading text={loadingText} />
                 </div>
             </div>}
             <div className='absolute inset-0 -z-10 opacity-60'>

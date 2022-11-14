@@ -1,6 +1,6 @@
-import React from 'react'
+export type LoadingText = 'Loading' | 'Uploading picture' | 'Signing in' | 'Registering' | 'Updating profile' | 'Updating profile picture' | 'Removing profile picture'
 
-const Loading = () => {
+const Loading = ({ text = 'Loading' }: { text?: string}) => {
   return (
     <div className="flex items-center justify-center w-full h-full z-[1000]">
 	<div className="flex justify-center items-center space-x-1 text-xl text-gray-700">
@@ -10,7 +10,7 @@ const Loading = () => {
 				d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
 				fill='currentColor' fillRule='evenodd' />
 		</svg>
-		<div>Loading...</div>
+		<div>{text}...</div>
 	</div>
     </div>
   )

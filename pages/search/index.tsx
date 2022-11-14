@@ -34,7 +34,7 @@ const Search: NextPage<{ pictures: PictureInterface[], me: User}> = ({ pictures,
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4 md:p-6 lg:p-10'>
             {picturesData?.length ? picturesData.map(pic => (
                 <Picture me={loggedUser!} setIsOpen={setIsOpen} isOpen={isOpen} setText={setText} key={pic._id} _id={pic._id} user={pic.user!} image={pic.image} />
-            )): picturesData?.length === 0 ? 
+            )): picturesData?.length ? 
             <p className='text-xl w-full sm:col-span-2 md:col-span-3 text-center'>No pictures to display 😞.</p>
             :<>
                 <AnimatedPicture />

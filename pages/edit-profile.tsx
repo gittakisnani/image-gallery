@@ -10,7 +10,7 @@ import { GetServerSideProps, GetStaticProps, NextPage } from 'next'
 import useSwr, { mutate } from 'swr'
 import fetcher from '../utils/fetcher'
 import axios from '../utils/axios'
-import Loading from '../components/Loading'
+import Loading, { LoadingText } from '../components/Loading'
 import { useRouter } from 'next/router'
 import previewFile from '../utils/previewFile'
 import { Creator } from '../components/CreatorPage'
@@ -60,21 +60,27 @@ const EditProfile: NextPage<{ me: User }> = ({ me: fallbackData }) => {
 
 
     const [errMsg, setErrMsg] = useState('');
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [loadingText, setLoadingText] = useState<LoadingText>()
     const takePicRef = useRef<HTMLInputElement>(null)
 
 
     useEffect(() => {
         if(!data?._id) router.push('/signin');
         data && [lastName, firstName, email, bio, location, website, twitter, yt, instagram, tiktok].forEach(el => el.current!.value = data![el.current!.name as keyof User] as string || '')
-    }, [data])
+    }, [data, router])
 
     const handleUpdate = async (e: SyntheticEvent) => {
         e.preventDefault();
+
         const updates: any = { };
+
         [bio, location, website, twitter, yt, instagram, tiktok].forEach(el => el.current!.value ? updates[el.current!.name] = el.current!.value : '')
+
         setErrMsg('')
         setLoading(true)
+        setLoadingText('Updating profile')
+
         try{
             const { data: updateData } = await axios.put(`users/${data?._id}`, 
             {
@@ -89,6 +95,7 @@ const EditProfile: NextPage<{ me: User }> = ({ me: fallbackData }) => {
             setErrMsg(err.response?.data?.message || err?.message || 'Update failed');
         } finally {
             setLoading(false)
+            setLoadingText('Loading')
         }
     }
 
@@ -103,6 +110,7 @@ const EditProfile: NextPage<{ me: User }> = ({ me: fallbackData }) => {
 
         setErrMsg('');
         setLoading(true)
+        setLoadingText('Updating profile picture')
         try {
             //Add picture to db
             const { data: imageUrl } = await axios.post<string>('file/upload', {
@@ -122,7 +130,8 @@ const EditProfile: NextPage<{ me: User }> = ({ me: fallbackData }) => {
         } catch(err) {
             setErrMsg('Error updating profile avatar')
         } finally {
-            setLoading(false)
+            setLoading(false);
+            setLoadingText('Loading')
         }
     }
 
@@ -131,7 +140,9 @@ const EditProfile: NextPage<{ me: User }> = ({ me: fallbackData }) => {
 
         setSrc(prev => DEFAULT);
         setErrMsg('');
-        setLoading(true)
+        setLoading(true);
+        setLoadingText('Removing profile picture');
+
         try {
             await axios.put(`users/${data?._id}`, {
                 picture: src
@@ -141,6 +152,7 @@ const EditProfile: NextPage<{ me: User }> = ({ me: fallbackData }) => {
             setErrMsg('Error removing profile avatar')
         } finally {
             setLoading(false)
+            setLoadingText('Loading')
         }
     }
 

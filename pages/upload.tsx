@@ -6,7 +6,7 @@ import useSWR from 'swr'
 import Container from '../components/Container'
 import Header from '../components/Header'
 import { AiFillCheckCircle, MdError } from '../components/Icons'
-import Loading from '../components/Loading'
+import Loading, { LoadingText } from '../components/Loading'
 import axios from '../utils/axios'
 import fetcher from '../utils/fetcher'
 import previewFile from '../utils/previewFile'
@@ -29,7 +29,8 @@ const Upload: NextPage<{ me: User }> = ({ me: fallbackData }) => {
     const [src, setSrc] = useState('')
     const [free, setFree] = useState(true);
     const [errMsg, setErrMsg] = useState('');
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [loadingText, setLoadingText] = useState<LoadingText>()
 
     const locationRef = useRef<HTMLInputElement>(null)
     const fileRef = useRef<null | HTMLInputElement>(null!)
@@ -44,7 +45,7 @@ const Upload: NextPage<{ me: User }> = ({ me: fallbackData }) => {
 
     useEffect(() => {
         if(!currentUser?._id) router.push('/signin')
-    }, [currentUser])
+    }, [currentUser, router])
 
 
     const handleUpload = async (e: SyntheticEvent) => {
@@ -54,7 +55,8 @@ const Upload: NextPage<{ me: User }> = ({ me: fallbackData }) => {
         }
 
         setErrMsg('');
-        setLoading(true)
+        setLoading(true);
+        setLoadingText('Uploading picture')
 
         try {
             //Add image to DB
@@ -75,12 +77,12 @@ const Upload: NextPage<{ me: User }> = ({ me: fallbackData }) => {
                 location: locationRef.current!.value || ''
             })
 
-            console.log(picture)
         } catch (error) {
             console.log({ error })
             setErrMsg('Error uploading picture')
         } finally {
             setLoading(false)
+            setLoadingText('Loading')
         }
 
     }
@@ -95,7 +97,7 @@ const Upload: NextPage<{ me: User }> = ({ me: fallbackData }) => {
     <main className='bg-white'>
         {loading && <div className='fixed bg-black/10 text-white inset-0 flex items-center justify-center'>
                 <div className='absolute max-w-[400px] w-[70%] bg-white text-black p-4 rounded-md font-semibold text-xl'>
-                    <Loading />
+                    <Loading text={loadingText} />
                 </div>
         </div>}
         <Container className='!max-w-[1100px] p-4'>
